@@ -1,0 +1,19 @@
+{
+    "bss_partial_invoice_rule": {
+        "column": {
+            "entity_id": true,
+            "rule_name": true,
+            "status": true,
+            "conditions_serialized": true,
+            "created_at": true,
+            "priority": true,
+            "store_id": true
+        },
+        "index": {
+            "BSS_PARTIAL_INVOICE_RULE_RULE_NAME": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}
