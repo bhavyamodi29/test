@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * BSS Commerce Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at thisURL:
+ * http://bsscommerce.com/Bss-Commerce-License.txt
+ *
+ * @category   BSS
+ * @package    Bss_AutoInvoice
+ * @author     Extension Team
+ * @copyright  Copyright (c) 2017-2018 BSS Commerce Co. ( http://bsscommerce.com )
+ * @license    http://bsscommerce.com/Bss-Commerce-License.txt
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Framework\Mail\Template\TransportBuilder" type="Bss\AutoInvoice\Mail\Template\TransportBuilder" />
+    <preference for="Magento\Paypal\Model\Api\Nvp" type="Bss\AutoInvoice\Model\Api\Nvp" />
+    <type name="Magento\Sales\Model\Order\Email\Sender\InvoiceSender">
+        <plugin name="attach_invoice_pdf" type="Bss\AutoInvoice\Model\Plugin\Order\Email\Sender\InvoiceSender" sortOrder="10" disabled="false"  />
+    </type>
+    <type name="Magento\Paypal\Model\Express">
+        <plugin name="attach_invoice_pdf" type="Bss\AutoInvoice\Model\Plugin\Paypal\Express" sortOrder="20" disabled="false"  />
+    </type>
+
+    <!--Partial Invoice Datasource  -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="bss_autoinv_rules_listing_data_source" xsi:type="string">Bss\AutoInvoice\Model\ResourceModel\Rule\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Bss\AutoInvoice\Model\ResourceModel\Rule\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">bss_partial_invoice_rule</argument>
+            <argument name="resourceModel" xsi:type="string">Bss\AutoInvoice\Model\ResourceModel\Rule</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Bss\AutoInvoice\Model\KlarnaRepository">
+        <arguments>
+            <argument name="klarnaRepository" xsi:type="string">\Klarna\Base\Model\OrderFactory</argument>
+            <argument name="klarnaOrder" xsi:type="string">\Klarna\Kco\Model\Checkout\Order</argument>
+        </arguments>
+    </type>
+
+    <!-- Api -->
+    <preference for="Bss\AutoInvoice\Api\RuleRepositoryInterface" type="Bss\AutoInvoice\Model\RuleRepository" />
+    <preference for="Bss\AutoInvoice\Api\Data\RuleInterface" type="Bss\AutoInvoice\Model\Rule" />
+    <type name="Klarna\Kco\Model\Checkout\Order">
+        <plugin name="bss_checkout_kco" type="Bss\AutoInvoice\Model\Plugin\Klarna\Checkout\Order" sortOrder="20" disabled="false"  />
+    </type>
+</config>
